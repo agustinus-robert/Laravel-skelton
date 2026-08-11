@@ -1,9 +1,19 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    FolderGit2,
+    LayoutGrid,
+    ListTree,
+    Settings,
+    Shield,
+    User,
+} from 'lucide-react';
+
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
+
 import {
     Sidebar,
     SidebarContent,
@@ -13,14 +23,55 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
+interface NavGroup {
+    title: string;
+    items: NavItem[];
+}
+
+const mainNavGroups: NavGroup[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
+        title: 'Platform',
+        items: [
+            {
+                title: 'Dashboard',
+                href: dashboard(),
+                icon: LayoutGrid,
+            },
+        ],
+    },
+    {
+        title: 'Master',
+        items: [
+            {
+                title: 'Kategori',
+                href: '/master/category',
+                icon: ListTree,
+            },
+        ],
+    },
+    {
+        title: 'Account',
+        items: [
+            {
+                title: 'User',
+                href: '/account/user',
+                icon: User,
+            },
+            {
+                title: 'Role',
+                href: '/account/role',
+                icon: Settings,
+            },
+            {
+                title: 'Permission',
+                href: '/account/permission',
+                icon: Shield,
+            },
+        ],
     },
 ];
 
@@ -53,7 +104,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain groups={mainNavGroups} />
             </SidebarContent>
 
             <SidebarFooter>

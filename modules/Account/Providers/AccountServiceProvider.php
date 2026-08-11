@@ -2,7 +2,10 @@
 
 namespace Modules\Account\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Account\Policies\UserPolicy;
 
 class AccountServiceProvider extends ServiceProvider
 {
@@ -12,12 +15,12 @@ class AccountServiceProvider extends ServiceProvider
     {
         parent::__construct($app);
 
-        $this->modulePath = realpath(__DIR__.'/..');
+        $this->modulePath = realpath(__DIR__ . '/..');
     }
 
     public function register(): void
     {
-        $config = $this->modulePath.'/config/config.php';
+        $config = $this->modulePath . '/config/config.php';
 
         if (is_file($config)) {
             $this->mergeConfigFrom(
@@ -29,8 +32,9 @@ class AccountServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $web = $this->modulePath.'/Routes/web.php';
-        $api = $this->modulePath.'/Routes/api.php';
+        Gate::policy(User::class, UserPolicy::class);
+        $web = $this->modulePath . '/Routes/web.php';
+        $api = $this->modulePath . '/Routes/api.php';
 
         if (is_file($web)) {
             $this->loadRoutesFrom($web);
@@ -40,7 +44,7 @@ class AccountServiceProvider extends ServiceProvider
             $this->loadRoutesFrom($api);
         }
 
-        $views = $this->modulePath.'/resources/views';
+        $views = $this->modulePath . '/resources/views';
 
         if (is_dir($views)) {
             $this->loadViewsFrom(
@@ -49,7 +53,7 @@ class AccountServiceProvider extends ServiceProvider
             );
         }
 
-        $migrations = $this->modulePath.'/database/migrations';
+        $migrations = $this->modulePath . '/database/migrations';
 
         if (is_dir($migrations)) {
             $this->loadMigrationsFrom($migrations);

@@ -6,13 +6,22 @@ use Illuminate\Support\ServiceProvider;
 
 class {{Module}}ServiceProvider extends ServiceProvider
 {
+    protected string $modulePath;
+
+    public function __construct($app)
+    {
+        parent::__construct($app);
+
+        $this->modulePath = realpath(__DIR__ . '/..');
+    }
+
     public function register(): void
     {
-        $modulePath = dirname(__DIR__, 2);
+        $config = $this->modulePath . '/config/config.php';
 
-        if (is_file($modulePath.'/config/config.php')) {
+        if (is_file($config)) {
             $this->mergeConfigFrom(
-                $modulePath.'/config/config.php',
+                $config,
                 '{{module}}'
             );
         }
@@ -20,27 +29,30 @@ class {{Module}}ServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $modulePath = dirname(__DIR__, 2);
+        $web = $this->modulePath . '/Routes/web.php';
+        $api = $this->modulePath . '/Routes/api.php';
 
-        if (is_file($modulePath.'/routes/web.php')) {
-            $this->loadRoutesFrom($modulePath.'/routes/web.php');
+        if (is_file($web)) {
+            $this->loadRoutesFrom($web);
         }
 
-        if (is_file($modulePath.'/routes/api.php')) {
-            $this->loadRoutesFrom($modulePath.'/routes/api.php');
+        if (is_file($api)) {
+            $this->loadRoutesFrom($api);
         }
 
-        if (is_dir($modulePath.'/resources/views')) {
+        $views = $this->modulePath . '/resources/views';
+
+        if (is_dir($views)) {
             $this->loadViewsFrom(
-                $modulePath.'/resources/views',
+                $views,
                 '{{module}}'
             );
         }
 
-        if (is_dir($modulePath.'/database/migrations')) {
-            $this->loadMigrationsFrom(
-                $modulePath.'/database/migrations'
-            );
+        $migrations = $this->modulePath . '/database/migrations';
+
+        if (is_dir($migrations)) {
+            $this->loadMigrationsFrom($migrations);
         }
     }
 }
